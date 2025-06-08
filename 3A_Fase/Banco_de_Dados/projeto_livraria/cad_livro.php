@@ -1,9 +1,7 @@
 <?php
-// ===== CONEXÃO COM O BANCO DE DADOS =====
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
-// ===== GRAVAÇÃO DE DADOS =====
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $isbn = $_POST['isbn'];
@@ -18,12 +16,10 @@ if (isset($_POST['Gravar'])) {
 
     $diretorio = "imagens/";
 
-    // Upload da foto da capa
     $extensao_capa = strtolower(substr($_FILES['foto_capa']['name'], -4));
     $novo_nome_capa = md5(time() . 'capa') . $extensao_capa;
     move_uploaded_file($_FILES['foto_capa']['tmp_name'], $diretorio . $novo_nome_capa);
 
-    // Upload da foto da contracapa
     $extensao_contracapa = strtolower(substr($_FILES['foto_contracapa']['name'], -4));
     $novo_nome_contracapa = md5(time() . 'contracapa') . $extensao_contracapa;
     move_uploaded_file($_FILES['foto_contracapa']['tmp_name'], $diretorio . $novo_nome_contracapa);
@@ -33,13 +29,12 @@ if (isset($_POST['Gravar'])) {
     $resultado = mysql_query($sql);
 
     if ($resultado == TRUE) {
-        echo "Dados gravados com sucesso!";
+        echo "<div class='box'>Dados gravados com sucesso!</div>";
     } else {
-        echo "Erro. - Motivo: Falha ao gravar os dados.";
+        echo "<div class='boxerror'>Erro ao gravar os dados.</div>";
     }
 }
 
-// ===== ALTERAÇÃO DE DADOS =====
 if (isset($_POST['Alterar'])) {
     $codigo = $_POST['codigo'];
     $isbn = $_POST['isbn'];
@@ -56,7 +51,6 @@ if (isset($_POST['Alterar'])) {
     $set_foto_capa = "";
     $set_foto_contracapa = "";
 
-    // Atualiza foto da capa se enviada
     if (!empty($_FILES['foto_capa']['name'])) {
         $extensao_capa = strtolower(substr($_FILES['foto_capa']['name'], -4));
         $novo_nome_capa = md5(time() . 'capa') . $extensao_capa;
@@ -64,7 +58,6 @@ if (isset($_POST['Alterar'])) {
         $set_foto_capa = ", foto_capa = '$novo_nome_capa'";
     }
 
-    // Atualiza foto da contracapa se enviada
     if (!empty($_FILES['foto_contracapa']['name'])) {
         $extensao_contracapa = strtolower(substr($_FILES['foto_contracapa']['name'], -4));
         $novo_nome_contracapa = md5(time() . 'contracapa') . $extensao_contracapa;
@@ -88,13 +81,12 @@ if (isset($_POST['Alterar'])) {
     $resultado = mysql_query($sql);
 
     if ($resultado == TRUE) {
-        echo "Dados alterados com sucesso!";
+        echo "<div class='box'>Dados alterados com sucesso!</div>";
     } else {
-        echo "Erro. - Motivo: Falha ao alterar os dados.";
+        echo "<div class='boxerror'>Erro ao alterar os dados.</div>";
     }
 }
 
-// ===== EXCLUSÃO DE DADOS =====
 if (isset($_POST['Excluir'])) {
     $codigo = $_POST['codigo'];
 
@@ -102,20 +94,19 @@ if (isset($_POST['Excluir'])) {
     $resultado = mysql_query($sql);
 
     if ($resultado == TRUE) {
-        echo "Dados excluídos com sucesso!";
+        echo "<div class='box'>Dados excluídos com sucesso!</div>";
     } else {
-        echo "Erro. - Motivo: Falha ao excluir os dados.";
+        echo "<div class='boxerror'>Erro ao excluir os dados.</div>";
     }
 }
 
-// ===== PESQUISA DE DADOS =====
 if (isset($_POST['Pesquisar'])) {
     $sql = "SELECT * FROM livro";
 
     $resultado = mysql_query($sql);
 
     if (mysql_num_rows($resultado) == 0) {
-        echo "Erro. - Motivo: Dados não encontrados.";
+        echo "<div class='boxerror'>Nenhum livro encontrado.</div>";
     } else {
         echo "<b>Pesquisa de Livros: </b><br>";
         while ($dados = mysql_fetch_array($resultado)) {
@@ -156,17 +147,11 @@ if (isset($_POST['Pesquisar'])) {
                 <a href="pagina_login.php" title="Minha Conta">
                     <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
                 </a>
-                <a href="pagina_home.php" title="Favoritos">
-                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="24" height="24" alt="Favoritos">
-                </a>
-                <a href="carrinho.php" title="Sacola">
-                    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" width="24" height="24" alt="Sacola">
-                </a>
             </div>
         </div>
     </div>
-    <main class="main-container" style="display: flex; justify-content: center; align-items: flex-start; min-height: 70vh;">
-        <section style="flex: 0 1 900px; width: 100%;">
+    <main class="main-container cadastro-main-center">
+        <section class="cadastro-section-livro">
             <div id="titulo">
                 <h1>Cadastro de Livro</h1>
             </div>

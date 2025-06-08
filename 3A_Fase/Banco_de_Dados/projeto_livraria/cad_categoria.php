@@ -1,10 +1,7 @@
-<!-- Código PHP: -->
 <?php
-// ===== CONEXÃO COM O BANCO DE DADOS =====
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
-// ===== GRAVAÇÃO DE DADOS =====
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $nome = $_POST['nome'];
@@ -15,11 +12,10 @@ if (isset($_POST['Gravar'])) {
     if ($resultado == TRUE) {
         echo "<div class='box'>Dados gravados com sucesso!</div>";
     } else {
-        echo "<div class='boxerror'>Erro. - Motivo: Falha ao gravar os dados.</div>";
+        echo "<div class='boxerror'>Erro ao gravar os dados.</div>";
     }
 }
 
-// ===== ALTERAÇÃO DE DADOS =====
 if (isset($_POST['Alterar'])) {
     $codigo = $_POST['codigo'];
     $nome = $_POST['nome'];
@@ -30,11 +26,10 @@ if (isset($_POST['Alterar'])) {
     if ($resultado == TRUE) {
         echo "<div class='box'>Dados alterados com sucesso!</div>";
     } else {
-        echo "<div class='boxerror'>Erro. - Motivo: Falha ao alterar os dados.</div>";
+        echo "<div class='boxerror'>Erro ao alterar os dados.</div>";
     }
 }
 
-// ===== EXCLUSÃO DE DADOS =====
 if (isset($_POST['Excluir'])) {
     $codigo = $_POST['codigo'];
 
@@ -44,17 +39,16 @@ if (isset($_POST['Excluir'])) {
     if ($resultado == TRUE) {
         echo "<div class='box'>Dados excluídos com sucesso!</div>";
     } else {
-        echo "<div class='boxerror'>Erro. - Motivo: Falha ao excluir os dados.</div>";
+        echo "<div class='boxerror'>Erro ao excluir os dados.</div>";
     }
 }
 
-// ===== PESQUISA DE DADOS =====
 if (isset($_POST['Pesquisar'])) {
     $sql = "SELECT * FROM categoria";
     $resultado = mysql_query($sql);
 
     if (mysql_num_rows($resultado) == 0) {
-        echo "<div class='boxerror'>Erro. - Motivo: Dados não encontrados.</div>";
+        echo "<div class='boxerror'>Nenhuma categoria encontrada.</div>";
     } else {
         echo "<b>Pesquisa de Categorias: </b><br>";
         while ($dados = mysql_fetch_array($resultado)) {
@@ -85,17 +79,11 @@ if (isset($_POST['Pesquisar'])) {
                 <a href="pagina_login.php" title="Minha Conta">
                     <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
                 </a>
-                <a href="pagina_home.php" title="Favoritos">
-                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="24" height="24" alt="Favoritos">
-                </a>
-                <a href="carrinho.php" title="Sacola">
-                    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" width="24" height="24" alt="Sacola">
-                </a>
             </div>
         </div>
     </div>
-    <main class="main-container" style="display: flex; justify-content: center; align-items: flex-start; min-height: 70vh;">
-        <section style="flex: 0 1 700px; width: 100%;">
+    <main class="main-container cadastro-main-center">
+        <section class="cadastro-section">
             <div id="titulo">
                 <h1>Cadastro de Categoria</h1>
             </div>

@@ -1,24 +1,20 @@
 <?php
-// ===== CONEXÃO COM O BANCO DE DADOS =====
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
-// ===== PROCESSO DE LOGIN =====
 if (isset($_POST['Entrar'])) {
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+    $email = mysql_real_escape_string($_POST['email']);
+    $senha = mysql_real_escape_string($_POST['senha']);
 
     $sql = "SELECT email, senha FROM usuario WHERE email = '$email' and senha = '$senha'";
     $resultado = mysql_query($sql);
 
     if (mysql_num_rows($resultado) <= 0) {
-        // Login inválido
         echo "<script language='javascript' type='text/javascript'>
             alert('E-mail e/ou senha incorreto(s)!');
             window.location.href='pagina_login.php';
             </script>";
     } else {
-        // Login válido, cria cookie e redireciona
         setcookie('login', $email);
         header('Location:pagina_menu.html');
         exit;
@@ -44,31 +40,26 @@ if (isset($_POST['Entrar'])) {
                 <a href="pagina_login.php" title="Minha Conta">
                     <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
                 </a>
-                <a href="pagina_home.php" title="Favoritos">
-                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="24" height="24" alt="Favoritos">
-                </a>
-                <a href="carrinho.php" title="Sacola">
-                    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" width="24" height="24" alt="Sacola">
-                </a>
             </div>
         </div>
     </div>
-    <main class="main-container" style="display: flex; justify-content: center; align-items: flex-start; min-height: 70vh;">
-        <section style="flex: 0 1 400px; width: 100%;">
+    <main class="main-container login-main-center">
+        <section class="login-section">
             <div id="titulo">
                 <h1>Login do Usuário</h1>
             </div>
-            <form class="form" name="formulario" method="POST" action="pagina_login.php" style="max-width:400px;">
+            <form class="form" name="formulario" method="POST" action="pagina_login.php" autocomplete="on">
                 <fieldset>
                     <legend>Dados de Acesso:</legend>
-                    <label>E-mail: <input type="text" name="email" id="email" required></label>
-                    <label>Senha: <input type="password" name="senha" id="senha" required></label>
+                    <label for="email">E-mail: <input type="email" name="email" id="email" required autocomplete="email"></label>
+                    <label for="senha">Senha: <input type="password" name="senha" id="senha" required autocomplete="current-password"></label>
                 </fieldset>
-                <div class="form-actions" style="justify-content: center;">
-                    <a href="cad_usuario.php" class="form-admin-btn" style="text-decoration:none;">
-                        <button type="button" style="margin-right:12px;">Cadastrar-se</button>
-                    </a>
-                    <button type="submit" name="Entrar">Entrar</button>
+                <div class="form-actions login-form-actions" style="flex-direction:column;gap:10px;">
+                    <button type="submit" name="Entrar" style="width:100%;">Entrar</button>
+                    <div style="width:100%;text-align:center;margin-top:10px;">
+                        Não possui uma conta?
+                        <a href="cad_usuario.php" style="color:#0056b3;text-decoration:underline;">Cadastre-se aqui.</a>
+                    </div>
                 </div>
             </form>
         </section>

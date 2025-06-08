@@ -10,7 +10,6 @@
 </head>
 
 <body class="page-body">
-    <!-- ===== BARRA SUPERIOR COM LOGO E ÍCONES ===== -->
     <div class="top-bar">
         <div class="top-bar-container">
             <a href="pagina_home.php" class="logo-link">
@@ -20,37 +19,30 @@
                 <a href="pagina_login.php" title="Minha Conta">
                     <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
                 </a>
-                <a href="pagina_home.php" title="Favoritos">
-                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="24" height="24" alt="Favoritos">
-                </a>
-                <a href="carrinho.php" title="Sacola">
-                    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" width="24" height="24" alt="Sacola">
-                </a>
             </div>
         </div>
     </div>
-    <!-- ===== CONTEÚDO PRINCIPAL: MENU DE CADASTROS ===== -->
-    <main class="main-container" style="display: flex; justify-content: center; align-items: flex-start; min-height: 70vh;">
-        <section style="flex: 0 1 400px; width: 100%;">
+    <main class="main-container menu-main-center">
+        <section class="menu-section">
             <div id="titulo">
                 <h1>Menu de Cadastros</h1>
             </div>
-            <!-- Formulário apenas para exibir botões de navegação para páginas de cadastro -->
-            <form class="form-admin" name="formulario" method="POST" action="#" style="max-width:400px;">
+            <form class="form-admin" name="formulario" method="POST" action="#">
                 <fieldset>
                     <legend>Opções disponíveis:</legend>
-                    <div class="form-row" style="flex-direction:column;gap:12px;">
-                        <!-- Botões de navegação para cada cadastro -->
+                    <div class="form-row menu-form-row">
                         <button type="button" onclick="window.location.href='cad_editora.php'">Editoras</button>
                         <button type="button" onclick="window.location.href='cad_categoria.php'">Categorias</button>
                         <button type="button" onclick="window.location.href='cad_autor.php'">Autores</button>
                         <button type="button" onclick="window.location.href='cad_livro.php'">Livros</button>
                     </div>
                 </fieldset>
+                <div class="form-actions">
+                    <button type="button" class="menu-voltar-btn" onclick="window.location.href='pagina_login.php'">Voltar</button>
+                </div>
             </form>
         </section>
     </main>
-    <!-- ===== RODAPÉ ===== -->
     <footer class="page-footer">
         <p>&copy; 2025 Coffee's Book - All rights reserved. </p>
     </footer>
