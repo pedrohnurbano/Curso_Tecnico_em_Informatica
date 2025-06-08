@@ -1,7 +1,9 @@
 <?php
+// ===== CONEXÃO COM O BANCO DE DADOS =====
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
+// ===== GRAVAÇÃO DE DADOS =====
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $isbn = $_POST['isbn'];
@@ -16,10 +18,12 @@ if (isset($_POST['Gravar'])) {
 
     $diretorio = "imagens/";
 
+    // Upload da foto da capa
     $extensao_capa = strtolower(substr($_FILES['foto_capa']['name'], -4));
     $novo_nome_capa = md5(time() . 'capa') . $extensao_capa;
     move_uploaded_file($_FILES['foto_capa']['tmp_name'], $diretorio . $novo_nome_capa);
 
+    // Upload da foto da contracapa
     $extensao_contracapa = strtolower(substr($_FILES['foto_contracapa']['name'], -4));
     $novo_nome_contracapa = md5(time() . 'contracapa') . $extensao_contracapa;
     move_uploaded_file($_FILES['foto_contracapa']['tmp_name'], $diretorio . $novo_nome_contracapa);
@@ -35,6 +39,7 @@ if (isset($_POST['Gravar'])) {
     }
 }
 
+// ===== ALTERAÇÃO DE DADOS =====
 if (isset($_POST['Alterar'])) {
     $codigo = $_POST['codigo'];
     $isbn = $_POST['isbn'];
@@ -51,6 +56,7 @@ if (isset($_POST['Alterar'])) {
     $set_foto_capa = "";
     $set_foto_contracapa = "";
 
+    // Atualiza foto da capa se enviada
     if (!empty($_FILES['foto_capa']['name'])) {
         $extensao_capa = strtolower(substr($_FILES['foto_capa']['name'], -4));
         $novo_nome_capa = md5(time() . 'capa') . $extensao_capa;
@@ -58,6 +64,7 @@ if (isset($_POST['Alterar'])) {
         $set_foto_capa = ", foto_capa = '$novo_nome_capa'";
     }
 
+    // Atualiza foto da contracapa se enviada
     if (!empty($_FILES['foto_contracapa']['name'])) {
         $extensao_contracapa = strtolower(substr($_FILES['foto_contracapa']['name'], -4));
         $novo_nome_contracapa = md5(time() . 'contracapa') . $extensao_contracapa;
@@ -87,6 +94,7 @@ if (isset($_POST['Alterar'])) {
     }
 }
 
+// ===== EXCLUSÃO DE DADOS =====
 if (isset($_POST['Excluir'])) {
     $codigo = $_POST['codigo'];
 
@@ -100,6 +108,7 @@ if (isset($_POST['Excluir'])) {
     }
 }
 
+// ===== PESQUISA DE DADOS =====
 if (isset($_POST['Pesquisar'])) {
     $sql = "SELECT * FROM livro";
 
@@ -126,7 +135,6 @@ if (isset($_POST['Pesquisar'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -138,40 +146,101 @@ if (isset($_POST['Pesquisar'])) {
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-    <header><img src="design_imagens/coffeesbook_logo.png" width="150"></header>
-
-    <main>
-        <div id="titulo">
-            <h1>Formulário de Cadastro de Livros</h1>
+<body class="page-body">
+    <div class="top-bar">
+        <div class="top-bar-container">
+            <a href="pagina_home.php" class="logo-link">
+                <img src="design_imagens/coffeesbook_logo.png" width="180" alt="Logo da Livraria">
+            </a>
+            <div class="header-icons">
+                <a href="pagina_login.php" title="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                </a>
+                <a href="pagina_home.php" title="Favoritos">
+                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="24" height="24" alt="Favoritos">
+                </a>
+                <a href="carrinho.php" title="Sacola">
+                    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" width="24" height="24" alt="Sacola">
+                </a>
+            </div>
         </div>
+    </div>
+    <main class="main-container" style="display: flex; justify-content: center; align-items: flex-start; min-height: 70vh;">
+        <section style="flex: 0 1 900px; width: 100%;">
+            <div id="titulo">
+                <h1>Cadastro de Livro</h1>
+            </div>
+            <form class="form-admin" name="formulario" method="POST" action="cad_livro.php" enctype="multipart/form-data">
+                <fieldset>
+                    <legend>Dados do Livro</legend>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="titulo">Título</label>
+                            <input type="text" name="titulo" id="titulo" placeholder="Digite o título">
+                        </div>
+                        <div class="form-col">
+                            <label for="codigo">Código</label>
+                            <input type="text" name="codigo" id="codigo" placeholder="Digite o código">
+                        </div>
+                        <div class="form-col">
+                            <label for="isbn">ISBN</label>
+                            <input type="text" name="isbn" id="isbn" placeholder="Digite o ISBN">
+                        </div>
 
-        <form class='form' name="formulario" method="POST" action="cad_livro.php" enctype="multipart/form-data">
-            <fieldset>
-                <legend>Dados do Livro:</legend>
-                <label>Código: <input type="text" name="codigo" id="codigo" size="5"></label><br><br>
-                <label>ISBN: <input type="text" name="isbn" id="isbn" size="20"></label><br><br>
-                <label>Título: <input type="text" name="titulo" id="titulo" size="50"></label><br><br>
-                <label>Nº Páginas: <input type="text" name="numero_paginas" id="numero_paginas" size="10"></label><br><br>
-                <label>Ano: <input type="text" name="ano" id="ano" size="6"></label><br><br>
-                <label>Cód. Autor: <input type="text" name="cod_autor" id="cod_autor" size="5"></label><br><br>
-                <label>Cód. Categoria: <input type="text" name="cod_categoria" id="cod_categoria" size="5"></label><br><br>
-                <label>Cód. Editora: <input type="text" name="cod_editora" id="cod_editora" size="5"></label><br><br>
-                <label>Sinopse:<br>
-                    <textarea name="sinopse" id="sinopse" cols="50" rows="4"></textarea>
-                </label><br><br>
-                <label>Preço: <input type="text" name="preco" id="preco" size="10"></label><br><br>
-                <label>Foto Capa: <input type="file" name="foto_capa" id="foto_capa"></label><br><br>
-                <label>Foto Contracapa: <input type="file" name="foto_contracapa" id="foto_contracapa"></label><br><br>
-            </fieldset>
-            <button type="submit" name="Gravar">Gravar</button>
-            <button type="submit" name="Alterar">Alterar</button>
-            <button type="submit" name="Excluir">Excluir</button>
-            <button type="submit" name="Pesquisar">Pesquisar</button>
-        </form>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="numero_paginas">Nº Páginas</label>
+                            <input type="text" name="numero_paginas" id="numero_paginas" placeholder="Digite o número de páginas">
+                        </div>
+                        <div class="form-col">
+                            <label for="ano">Ano</label>
+                            <input type="text" name="ano" id="ano" placeholder="Digite o ano">
+                        </div>
+                        <div class="form-col">
+                            <label for="cod_autor">Cód. Autor</label>
+                            <input type="text" name="cod_autor" id="cod_autor" placeholder="Código do autor">
+                        </div>
+                        <div class="form-col">
+                            <label for="cod_categoria">Cód. Categoria</label>
+                            <input type="text" name="cod_categoria" id="cod_categoria" placeholder="Código da categoria">
+                        </div>
+                        <div class="form-col">
+                            <label for="cod_editora">Cód. Editora</label>
+                            <input type="text" name="cod_editora" id="cod_editora" placeholder="Código da editora">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="preco">Preço</label>
+                            <input type="text" name="preco" id="preco" placeholder="Digite o preço">
+                        </div>
+                        <div class="form-col">
+                            <label for="foto_capa">Foto Capa</label>
+                            <input type="file" name="foto_capa" id="foto_capa">
+                        </div>
+                        <div class="form-col">
+                            <label for="foto_contracapa">Foto Contracapa</label>
+                            <input type="file" name="foto_contracapa" id="foto_contracapa">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col" style="flex:2;">
+                            <label for="sinopse">Sinopse</label>
+                            <textarea name="sinopse" id="sinopse" placeholder="Digite a sinopse"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" name="Gravar">Gravar</button>
+                        <button type="submit" name="Alterar">Alterar</button>
+                        <button type="submit" name="Excluir">Excluir</button>
+                        <button type="submit" name="Pesquisar">Pesquisar</button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
     </main>
-
-    <footer>
+    <footer class="page-footer">
         <p>&copy; 2025 Coffee's Book - All rights reserved. </p>
     </footer>
 </body>

@@ -1,65 +1,62 @@
 <!-- Código PHP: -->
 <?php
+// ===== CONEXÃO COM O BANCO DE DADOS =====
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
-// Gravação de dados:
+// ===== GRAVAÇÃO DE DADOS =====
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $nome = $_POST['nome'];
 
-    $sql = "insert into categoria (codigo, nome)
-            values ('$codigo','$nome')";
+    $sql = "INSERT INTO categoria (codigo, nome) VALUES ('$codigo','$nome')";
     $resultado = mysql_query($sql);
 
     if ($resultado == TRUE) {
-        echo "Dados gravados com sucesso!";
+        echo "<div class='box'>Dados gravados com sucesso!</div>";
     } else {
-        echo "Erro. - Motivo: Falha ao gravar os dados.";
+        echo "<div class='boxerror'>Erro. - Motivo: Falha ao gravar os dados.</div>";
     }
 }
 
-// Alteração de dados:
+// ===== ALTERAÇÃO DE DADOS =====
 if (isset($_POST['Alterar'])) {
     $codigo = $_POST['codigo'];
     $nome = $_POST['nome'];
 
-    $sql = "update categoria set nome = '$nome',
-            where codigo = '$codigo'";
+    $sql = "UPDATE categoria SET nome = '$nome' WHERE codigo = '$codigo'";
     $resultado = mysql_query($sql);
 
     if ($resultado == TRUE) {
-        echo "Dados alterados com sucesso!";
+        echo "<div class='box'>Dados alterados com sucesso!</div>";
     } else {
-        echo "Erro. - Motivo: Falha ao alterar os dados.";
+        echo "<div class='boxerror'>Erro. - Motivo: Falha ao alterar os dados.</div>";
     }
 }
 
-// Exclusão de dados:
+// ===== EXCLUSÃO DE DADOS =====
 if (isset($_POST['Excluir'])) {
     $codigo = $_POST['codigo'];
-    $nome = $_POST['nome'];
 
-    $sql = "delete from categoria where codigo = '$codigo'";
+    $sql = "DELETE FROM categoria WHERE codigo = '$codigo'";
     $resultado = mysql_query($sql);
 
     if ($resultado == TRUE) {
-        echo "Dados excluídos com sucesso!";
+        echo "<div class='box'>Dados excluídos com sucesso!</div>";
     } else {
-        echo "Erro. - Motivo: Falha ao excluir os dados.";
+        echo "<div class='boxerror'>Erro. - Motivo: Falha ao excluir os dados.</div>";
     }
 }
 
-// Pesquisa de dados:
+// ===== PESQUISA DE DADOS =====
 if (isset($_POST['Pesquisar'])) {
-    $sql = "select * from categoria";
-
+    $sql = "SELECT * FROM categoria";
     $resultado = mysql_query($sql);
 
     if (mysql_num_rows($resultado) == 0) {
-        echo "Erro. - Motivo: Dados não encontrados.";
+        echo "<div class='boxerror'>Erro. - Motivo: Dados não encontrados.</div>";
     } else {
-        echo "<b>" . "Pesquisa de Categorias: " . "</b><br>";
+        echo "<b>Pesquisa de Categorias: </b><br>";
         while ($dados = mysql_fetch_array($resultado)) {
             echo "Código: " . $dados['codigo'] . "<br>" .
                 "Nome: " . $dados['nome'] . "<br>";
@@ -67,41 +64,65 @@ if (isset($_POST['Pesquisar'])) {
     }
 }
 ?>
-
-<!-- Código HTML: -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Cadastro de Categorias </title>
+    <title>Cadastro de Categorias</title>
     <link rel="shortcut icon" href="design_imagens/coffeesbook_icon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-    <header><img src="design_imagens/coffeesbook_logo.png" width="150"></header>
-
-    <main>
-        <div id="titulo">
-            <h1> Formulário de Cadastro de Categorias </h1>
+<body class="page-body">
+    <div class="top-bar">
+        <div class="top-bar-container">
+            <a href="pagina_home.php" class="logo-link">
+                <img src="design_imagens/coffeesbook_logo.png" width="180" alt="Logo da Livraria">
+            </a>
+            <div class="header-icons">
+                <a href="pagina_login.php" title="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                </a>
+                <a href="pagina_home.php" title="Favoritos">
+                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" width="24" height="24" alt="Favoritos">
+                </a>
+                <a href="carrinho.php" title="Sacola">
+                    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" width="24" height="24" alt="Sacola">
+                </a>
+            </div>
         </div>
-
-        <form class='form' name="formulario" method="POST" action="cad_categoria.php">
-            <fieldset>
-                <legend> Dados da Categoria: </legend>
-                <label> Código: <input type="text" name="codigo" id="codigo" size="5"></label><br><br>
-                <label> Nome: <input type="text" name="nome" id="nome" size="50"></label><br><br>
-            </fieldset>
-            <button type="submit" name="Gravar"> Gravar </button>
-            <button type="submit" name="Alterar"> Alterar </button>
-            <button type="submit" name="Excluir"> Excluir </button>
-            <button type="submit" name="Pesquisar"> Pesquisar </button>
-        </form>
+    </div>
+    <main class="main-container" style="display: flex; justify-content: center; align-items: flex-start; min-height: 70vh;">
+        <section style="flex: 0 1 700px; width: 100%;">
+            <div id="titulo">
+                <h1>Cadastro de Categoria</h1>
+            </div>
+            <form class="form-admin" name="formulario" method="POST" action="cad_categoria.php">
+                <fieldset>
+                    <legend>Dados da Categoria</legend>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="codigo">Código</label>
+                            <input type="text" name="codigo" id="codigo" placeholder="Digite o código">
+                        </div>
+                        <div class="form-col">
+                            <label for="nome">Nome</label>
+                            <input type="text" name="nome" id="nome" placeholder="Digite o nome da categoria">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" name="Gravar">Gravar</button>
+                        <button type="submit" name="Alterar">Alterar</button>
+                        <button type="submit" name="Excluir">Excluir</button>
+                        <button type="submit" name="Pesquisar">Pesquisar</button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
     </main>
-
-    <footer>
+    <footer class="page-footer">
         <p>&copy; 2025 Coffee's Book - All rights reserved. </p>
     </footer>
 </body>
