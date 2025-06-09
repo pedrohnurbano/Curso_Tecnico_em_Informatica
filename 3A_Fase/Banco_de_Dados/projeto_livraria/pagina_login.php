@@ -23,6 +23,7 @@ if (isset($_POST['Entrar'])) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,6 +31,7 @@ if (isset($_POST['Entrar'])) {
     <link rel="shortcut icon" href="design_imagens/coffeesbook_icon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="page-body">
     <div class="top-bar">
         <div class="top-bar-container">
@@ -38,7 +40,8 @@ if (isset($_POST['Entrar'])) {
             </a>
             <div class="header-icons">
                 <a href="pagina_login.php" title="Minha Conta">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24"
+                        alt="Minha Conta">
                 </a>
             </div>
         </div>
@@ -51,8 +54,10 @@ if (isset($_POST['Entrar'])) {
             <form class="form" name="formulario" method="POST" action="pagina_login.php" autocomplete="on">
                 <fieldset>
                     <legend>Dados de Acesso:</legend>
-                    <label for="email">E-mail: <input type="email" name="email" id="email" required autocomplete="email"></label>
-                    <label for="senha">Senha: <input type="password" name="senha" id="senha" required autocomplete="current-password"></label>
+                    <label for="email">E-mail: <input type="email" name="email" id="email" required
+                            autocomplete="email"></label>
+                    <label for="senha">Senha: <input type="password" name="senha" id="senha" required
+                            autocomplete="current-password"></label>
                 </fieldset>
                 <div class="form-actions login-form-actions" style="flex-direction:column;gap:10px;">
                     <button type="submit" name="Entrar" style="width:100%;">Entrar</button>
@@ -68,4 +73,5 @@ if (isset($_POST['Entrar'])) {
         <p>&copy; 2025 Coffee's Book - All rights reserved. </p>
     </footer>
 </body>
+
 </html>

@@ -2,6 +2,9 @@
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
+$pesquisa_livros = array();
+$exibir_pesquisa = false;
+
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $isbn = $_POST['isbn'];
@@ -102,27 +105,15 @@ if (isset($_POST['Excluir'])) {
 
 if (isset($_POST['Pesquisar'])) {
     $sql = "SELECT * FROM livro";
-
     $resultado = mysql_query($sql);
 
     if (mysql_num_rows($resultado) == 0) {
         echo "<div class='boxerror'>Nenhum livro encontrado.</div>";
     } else {
-        echo "<b>Pesquisa de Livros: </b><br>";
         while ($dados = mysql_fetch_array($resultado)) {
-            echo "Código: " . $dados['codigo'] . "<br>" .
-                "ISBN: " . $dados['isbn'] . "<br>" .
-                "Título: " . $dados['titulo'] . "<br>" .
-                "Nº Páginas: " . $dados['numero_paginas'] . "<br>" .
-                "Ano: " . $dados['ano'] . "<br>" .
-                "Autor: " . $dados['cod_autor'] . "<br>" .
-                "Categoria: " . $dados['cod_categoria'] . "<br>" .
-                "Editora: " . $dados['cod_editora'] . "<br>" .
-                "Sinopse: " . $dados['sinopse'] . "<br>" .
-                "Preço: " . $dados['preco'] . "<br>";
-            echo "Foto Capa: <img src='imagens/" . $dados['foto_capa'] . "' height='100' width='80'><br>";
-            echo "Foto Contracapa: <img src='imagens/" . $dados['foto_contracapa'] . "' height='100' width='80'><br><br>";
+            $pesquisa_livros[] = $dados;
         }
+        $exibir_pesquisa = true;
     }
 }
 ?>
@@ -145,17 +136,69 @@ if (isset($_POST['Pesquisar'])) {
             </a>
             <div class="header-icons">
                 <a href="pagina_login.php" title="Minha Conta">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24"
+                        alt="Minha Conta">
                 </a>
             </div>
         </div>
     </div>
+    <?php if ($exibir_pesquisa && count($pesquisa_livros) > 0): ?>
+        <div class="product-list" style="max-width:1100px;margin:32px auto 0 auto;">
+            <h3 style="margin-bottom:18px;">Livros cadastrados:</h3>
+            <div class="product-grid">
+                <?php foreach ($pesquisa_livros as $livro): ?>
+                    <div class="product-card" style="align-items:flex-start;">
+                        <div class="product-img-container" style="margin-bottom:10px;">
+                            <?php if (!empty($livro['foto_capa']) && file_exists('imagens/' . $livro['foto_capa'])): ?>
+                                <img src="imagens/<?php echo htmlspecialchars($livro['foto_capa']); ?>" alt="Capa do Livro"
+                                    class="product-img-main">
+                            <?php else: ?>
+                                <div
+                                    style="width:150px;height:220px;display:flex;align-items:center;justify-content:center;background:#f7f7f7;border-radius:6px;color:#bbb;font-size:1.2em;">
+                                    Sem imagem
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <h4 style="margin-bottom:6px;"><?php echo htmlspecialchars($livro['titulo']); ?></h4>
+                        <div class="autor" style="color:#888;margin-bottom:2px;">
+                            <strong>Código:</strong> <?php echo htmlspecialchars($livro['codigo']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>ISBN:</strong> <?php echo htmlspecialchars($livro['isbn']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Nº Páginas:</strong> <?php echo htmlspecialchars($livro['numero_paginas']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Ano:</strong> <?php echo htmlspecialchars($livro['ano']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Cód. Autor:</strong> <?php echo htmlspecialchars($livro['cod_autor']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Cód. Categoria:</strong> <?php echo htmlspecialchars($livro['cod_categoria']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Cód. Editora:</strong> <?php echo htmlspecialchars($livro['cod_editora']); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Preço:</strong> R$ <?php echo number_format($livro['preco'], 2, ',', '.'); ?>
+                        </div>
+                        <div class="editora" style="color:#888;margin-bottom:2px;">
+                            <strong>Sinopse:</strong> <?php echo nl2br(htmlspecialchars($livro['sinopse'])); ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
     <main class="main-container cadastro-main-center">
         <section class="cadastro-section-livro">
             <div id="titulo">
                 <h1>Cadastro de Livro</h1>
             </div>
-            <form class="form-admin" name="formulario" method="POST" action="cad_livro.php" enctype="multipart/form-data">
+            <form class="form-admin" name="formulario" method="POST" action="cad_livro.php"
+                enctype="multipart/form-data">
                 <fieldset>
                     <legend>Dados do Livro</legend>
                     <div class="form-row">
@@ -176,7 +219,8 @@ if (isset($_POST['Pesquisar'])) {
                     <div class="form-row">
                         <div class="form-col">
                             <label for="numero_paginas">Nº Páginas</label>
-                            <input type="text" name="numero_paginas" id="numero_paginas" placeholder="Digite o número de páginas">
+                            <input type="text" name="numero_paginas" id="numero_paginas"
+                                placeholder="Digite o número de páginas">
                         </div>
                         <div class="form-col">
                             <label for="ano">Ano</label>
@@ -188,7 +232,8 @@ if (isset($_POST['Pesquisar'])) {
                         </div>
                         <div class="form-col">
                             <label for="cod_categoria">Cód. Categoria</label>
-                            <input type="text" name="cod_categoria" id="cod_categoria" placeholder="Código da categoria">
+                            <input type="text" name="cod_categoria" id="cod_categoria"
+                                placeholder="Código da categoria">
                         </div>
                         <div class="form-col">
                             <label for="cod_editora">Cód. Editora</label>

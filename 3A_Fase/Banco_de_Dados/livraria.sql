@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tempo de Geração: 09/06/2025 às 00h16min
+-- Tempo de Geração: 09/06/2025 às 19h38min
 -- Versão do Servidor: 5.5.20
 -- Versão do PHP: 5.3.9
 
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `livro` (
   KEY `cod_autor` (`cod_autor`),
   KEY `cod_categoria` (`cod_categoria`),
   KEY `cod_editora` (`cod_editora`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
 
 --
 -- Extraindo dados da tabela `livro`
@@ -178,7 +178,8 @@ INSERT INTO `livro` (`codigo`, `isbn`, `titulo`, `numero_paginas`, `ano`, `cod_a
 (24, 97815, 'Nada Pode me Ferir', 320, 2023, 11, 11, 11, '"Nada Pode Me Ferir" (de David Goggins) Ã© uma histÃ³ria de superaÃ§Ã£o que documenta a jornada de Goggins, desde uma infÃ¢ncia difÃ­cil marcada por pobreza, racismo e maus-tratos, atÃ© se tornar um dos maiores atletas de resistÃªncia do mundo, um ex-militar que completou os treinamentos das forÃ§as de elite (Navy SEAL, Army Ranger e TACP).', 59.90, '4b6295f8024746a05d0862bd663682d1.jpg', '2e2d8ede08cc21efc89fdbbdb9350120webp'),
 (25, 97829, 'As Coisas que VocÃª sÃ³ vÃª Quando Desacelera', 256, 2017, 12, 12, 12, 'As coisas que vocÃª sÃ³ vÃª quando desacelera Ã© um convite para enxergar o valor de pausas, presenÃ§a e aceitaÃ§Ã£o em uma sociedade acelerada. Haemin Sunim nos lembra que a felicidade nÃ£o Ã© encontrada em conquistas externas, mas no cultivo de uma mente serena e consciente, em harmonia com o momento presente.', 55.90, '65d1d27f0ab3066540afffaa01a913a0.jpg', 'eea34efe41396f50e0339aad4e9657f6webp'),
 (26, 97841, 'A Coragem de Ser Imperfeito', 208, 2016, 13, 13, 13, 'BrenÃ© Brown, que durante 12 anos desenvolveu uma pesquisa pioneira sobre vulnerabilidade, essa condiÃ§Ã£o nÃ£o Ã© uma medida de fraqueza, mas a melhor definiÃ§Ã£o de coragem. Quando fugimos de emoÃ§Ãµes como medo, mÃ¡goa e decepÃ§Ã£o, tambÃ©m nos fechamos para o amor, a aceitaÃ§Ã£o, a empatia e a criatividade.', 49.90, '7aca4256e9a2b4a56b06c0d56666de65.jpg', 'ed4467a37bfe80365384abab0774cbff.jpg'),
-(27, 97863, 'A Gente Mira no Amor e Acerta na SolidÃ£o', 160, 2022, 14, 14, 14, '"A gente mira no amor e acerta na solidÃ£o" Ã© um livro da psicanalista Ana Suy que explora as nuances das relaÃ§Ãµes amorosas e a experiÃªncia da solidÃ£o, abordando-as nÃ£o como opostos, mas como parte intrÃ­nseca do ciclo da vida. A obra busca entender como os indivÃ­duos se relacionam com seus sentimentos, questionando como as relaÃ§Ãµes amorosas e a solidÃ£o se interligam.', 55.90, 'a69d435bb1704ed9d3ef54faefcda143.jpg', 'b7b91a4a3af7498dd3c9fcd21ebf194e.jpg');
+(27, 97863, 'A Gente Mira no Amor e Acerta na SolidÃ£o', 160, 2022, 14, 14, 14, '"A gente mira no amor e acerta na solidÃ£o" Ã© um livro da psicanalista Ana Suy que explora as nuances das relaÃ§Ãµes amorosas e a experiÃªncia da solidÃ£o, abordando-as nÃ£o como opostos, mas como parte intrÃ­nseca do ciclo da vida. A obra busca entender como os indivÃ­duos se relacionam com seus sentimentos, questionando como as relaÃ§Ãµes amorosas e a solidÃ£o se interligam.', 55.90, 'a69d435bb1704ed9d3ef54faefcda143.jpg', 'b7b91a4a3af7498dd3c9fcd21ebf194e.jpg'),
+(28, 97803, 'AdmirÃ¡vel Mundo Novo', 312, 2014, 15, 15, 15, '"AdmirÃ¡vel Mundo Novo", de Aldous Huxley, Ã© uma distopia que retrata uma sociedade futura onde a ciÃªncia e a tecnologia sÃ£o usadas para criar um mundo aparentemente perfeito, mas que na verdade Ã© totalitÃ¡rio e alienante. Os seres humanos sÃ£o geneticamente manipulados e condicionados desde a concepÃ§Ã£o para pertencer a diferentes castas, e a felicidade Ã© garantida atravÃ©s do uso de drogas e entretenimento.', 42.91, 'b7821fbd12fa71a8f5c0b06d2e3f7c35.jpg', '1ddf57f5f012a13e675634dac8d4eb64.jpg');
 
 -- --------------------------------------------------------
 
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `email` varchar(50) NOT NULL,
   `senha` varchar(10) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Extraindo dados da tabela `usuario`

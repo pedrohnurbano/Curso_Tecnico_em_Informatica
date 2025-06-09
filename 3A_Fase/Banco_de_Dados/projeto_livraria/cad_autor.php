@@ -2,6 +2,9 @@
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
+$pesquisa_autores = array();
+$exibir_pesquisa = false;
+
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $nome = $_POST['nome'];
@@ -52,12 +55,10 @@ if (isset($_POST['Pesquisar'])) {
     if (mysql_num_rows($resultado) == 0) {
         echo "<div class='boxerror'>Nenhum autor encontrado.</div>";
     } else {
-        echo "<b>Pesquisa de Autores: </b><br>";
         while ($dados = mysql_fetch_array($resultado)) {
-            echo "Código: " . $dados['codigo'] . "<br>" .
-                "Nome: " . $dados['nome'] . "<br>" .
-                "País: " . $dados['pais'] . "<br><br>";
+            $pesquisa_autores[] = $dados;
         }
+        $exibir_pesquisa = true;
     }
 }
 ?>
@@ -80,11 +81,32 @@ if (isset($_POST['Pesquisar'])) {
             </a>
             <div class="header-icons">
                 <a href="pagina_login.php" title="Minha Conta">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24"
+                        alt="Minha Conta">
                 </a>
             </div>
         </div>
     </div>
+    <?php if ($exibir_pesquisa && count($pesquisa_autores) > 0): ?>
+        <div class="product-list" style="max-width:900px;margin:32px auto 0 auto;">
+            <h3 style="margin-bottom:18px;">Autores cadastrados:</h3>
+            <div class="product-grid">
+                <?php foreach ($pesquisa_autores as $autor): ?>
+                    <div class="product-card" style="align-items:flex-start;">
+                        <div style="width:100%;">
+                            <h4 style="margin-bottom:6px;"><?php echo htmlspecialchars($autor['nome']); ?></h4>
+                            <div class="autor" style="color:#888;margin-bottom:4px;">
+                                <strong>Código:</strong> <?php echo htmlspecialchars($autor['codigo']); ?>
+                            </div>
+                            <div class="editora" style="color:#888;">
+                                <strong>País:</strong> <?php echo htmlspecialchars($autor['pais']); ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
     <main class="main-container cadastro-main-center">
         <section class="cadastro-section">
             <div id="titulo">

@@ -2,6 +2,9 @@
 $conectar = mysql_connect('localhost', 'root', '');
 $banco = mysql_select_db('livraria');
 
+$pesquisa_categorias = array();
+$exibir_pesquisa = false;
+
 if (isset($_POST['Gravar'])) {
     $codigo = $_POST['codigo'];
     $nome = $_POST['nome'];
@@ -50,11 +53,10 @@ if (isset($_POST['Pesquisar'])) {
     if (mysql_num_rows($resultado) == 0) {
         echo "<div class='boxerror'>Nenhuma categoria encontrada.</div>";
     } else {
-        echo "<b>Pesquisa de Categorias: </b><br>";
         while ($dados = mysql_fetch_array($resultado)) {
-            echo "Código: " . $dados['codigo'] . "<br>" .
-                "Nome: " . $dados['nome'] . "<br>";
+            $pesquisa_categorias[] = $dados;
         }
+        $exibir_pesquisa = true;
     }
 }
 ?>
@@ -77,11 +79,29 @@ if (isset($_POST['Pesquisar'])) {
             </a>
             <div class="header-icons">
                 <a href="pagina_login.php" title="Minha Conta">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24"
+                        alt="Minha Conta">
                 </a>
             </div>
         </div>
     </div>
+    <?php if ($exibir_pesquisa && count($pesquisa_categorias) > 0): ?>
+        <div class="product-list" style="max-width:900px;margin:32px auto 0 auto;">
+            <h3 style="margin-bottom:18px;">Categorias cadastradas:</h3>
+            <div class="product-grid">
+                <?php foreach ($pesquisa_categorias as $cat): ?>
+                    <div class="product-card" style="align-items:flex-start;">
+                        <div style="width:100%;">
+                            <h4 style="margin-bottom:6px;"><?php echo htmlspecialchars($cat['nome']); ?></h4>
+                            <div class="categoria" style="color:#888;">
+                                <strong>Código:</strong> <?php echo htmlspecialchars($cat['codigo']); ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
     <main class="main-container cadastro-main-center">
         <section class="cadastro-section">
             <div id="titulo">

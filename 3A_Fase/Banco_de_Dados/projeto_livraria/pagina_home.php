@@ -61,23 +61,205 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
     <link rel="shortcut icon" href="design_imagens/coffeesbook_icon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
     <script>
-    window.addEventListener('DOMContentLoaded', function() {
-        var msg = document.querySelector('.message_box');
-        if (msg) {
-            setTimeout(function() {
-                msg.style.display = 'none';
-            }, 5000);
-        }
+        window.addEventListener('DOMContentLoaded', function () {
+            var msg = document.querySelector('.message_box');
+            if (msg) {
+                setTimeout(function () {
+                    msg.style.display = 'none';
+                }, 3000);
+            }
 
-        // Script para alternar o coração favorito
-        document.querySelectorAll('.favorite-heart').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                btn.classList.toggle('favorited');
+            function updateFavoritesCounter() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'favoritos.php?count=1', true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var count = parseInt(xhr.responseText, 10);
+                        var counter = document.getElementById('favorites-counter');
+                        if (counter) {
+                            counter.textContent = count;
+                            counter.style.display = count > 0 ? 'inline-block' : 'none';
+                        }
+                    }
+                };
+                xhr.send();
+            }
+
+            function addToFavorites(btn) {
+                var card = btn.closest('.product-card');
+                var codigo = btn.getAttribute('data-codigo');
+                var titulo = card.querySelector('h4').textContent;
+                var capa = card.querySelector('.product-img-main').getAttribute('src').replace('imagens/', '');
+                var preco = card.querySelector('.preco').textContent.replace(/[^\d,]/g, '').replace(',', '.');
+                var data = new FormData();
+                data.append('action', 'add');
+                data.append('code', codigo);
+                data.append('titulo', titulo);
+                data.append('capa', capa);
+                data.append('preco', preco);
+
+                fetch('favoritos.php', { method: 'POST', body: data })
+                    .then(() => updateFavoritesCounter());
+            }
+
+            document.querySelectorAll('.favorite-heart').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    btn.classList.toggle('favorited');
+                    if (btn.classList.contains('favorited')) {
+                        addToFavorites(btn);
+                    } else {
+                        var codigo = btn.getAttribute('data-codigo');
+                        var data = new FormData();
+                        data.append('action', 'remove');
+                        data.append('code', codigo);
+                        fetch('favoritos.php', { method: 'POST', body: data })
+                            .then(() => updateFavoritesCounter());
+                    }
+                });
             });
+
+            updateFavoritesCounter();
+
+            var favLink = document.getElementById('favoritos-header-link');
+            if (favLink) {
+                favLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (!document.getElementById('favSidebarOverlay')) {
+                        var overlay = document.createElement('div');
+                        overlay.className = 'fav-sidebar-overlay active';
+                        overlay.id = 'favSidebarOverlay';
+                        document.body.appendChild(overlay);
+
+                        var aside = document.createElement('aside');
+                        aside.className = 'fav-sidebar active';
+                        aside.id = 'favSidebar';
+                        aside.innerHTML = `
+                            <div class="fav-sidebar-header">
+                                <span class="fav-sidebar-title">Meus Favoritos</span>
+                                <button class="fav-sidebar-close" id="closeFavSidebar" title="Fechar">&times;</button>
+                            </div>
+                            <div class="fav-sidebar-content" id="favSidebarContent"></div>
+                        `;
+                        document.body.appendChild(aside);
+
+                        document.getElementById('closeFavSidebar').onclick = closeFavSidebar;
+                        overlay.onclick = closeFavSidebar;
+                    } else {
+                        document.getElementById('favSidebarOverlay').classList.add('active');
+                        document.getElementById('favSidebar').classList.add('active');
+                    }
+                    renderFavSidebar();
+                });
+            }
+
+            function closeFavSidebar() {
+                var overlay = document.getElementById('favSidebarOverlay');
+                var aside = document.getElementById('favSidebar');
+                if (overlay) overlay.classList.remove('active');
+                if (aside) aside.classList.remove('active');
+            }
+
+            function renderFavSidebar() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'favoritos.php?sidebar=1', true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        document.getElementById('favSidebarContent').innerHTML = xhr.responseText;
+                        document.querySelectorAll('.fav-sidebar-remove-form').forEach(function (form) {
+                            form.onsubmit = function (ev) {
+                                ev.preventDefault();
+                                var fd = new FormData(form);
+                                fetch('favoritos.php', { method: 'POST', body: fd })
+                                    .then(() => {
+                                        renderFavSidebar();
+                                        updateFavoritesCounter();
+                                        var code = form.querySelector('input[name="code"]').value;
+                                        document.querySelectorAll('.favorite-heart[data-codigo="' + code + '"]').forEach(function (btn) {
+                                            btn.classList.remove('favorited');
+                                        });
+                                    });
+                            };
+                        });
+                    }
+                };
+                xhr.send();
+            }
+
+            function updateCartCount() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'carrinho.php?count=1', true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var count = parseInt(xhr.responseText, 10);
+                        var cartIcon = document.getElementById('open-cart-sidebar');
+                        if (cartIcon) {
+                            var span = cartIcon.querySelector('span');
+                            if (!span) {
+                                span = document.createElement('span');
+                                cartIcon.appendChild(span);
+                            }
+                            span.textContent = count;
+                            span.style.display = count > 0 ? 'inline-block' : 'none';
+                        }
+                    }
+                };
+                xhr.send();
+            }
+            updateCartCount();
+
+            document.getElementById('open-cart-sidebar').onclick = function (e) {
+                e.preventDefault();
+                document.getElementById('cart-sidebar-overlay').classList.add('active');
+                document.getElementById('cart-sidebar').classList.add('active');
+                loadCartSidebar();
+            };
+            document.getElementById('close-cart-sidebar').onclick = function () {
+                document.getElementById('cart-sidebar-overlay').classList.remove('active');
+                document.getElementById('cart-sidebar').classList.remove('active');
+                updateCartCount();
+            };
+            document.getElementById('cart-sidebar-overlay').onclick = function () {
+                document.getElementById('cart-sidebar-overlay').classList.remove('active');
+                document.getElementById('cart-sidebar').classList.remove('active');
+                updateCartCount();
+            };
+
+            function attachSidebarForms() {
+                document.querySelectorAll('.cart-sidebar-remove-form').forEach(function (form) {
+                    form.onsubmit = function (e) {
+                        e.preventDefault();
+                        var data = new FormData(form);
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'carrinho.php', true);
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                loadCartSidebar();
+                                updateCartCount();
+                            }
+                        };
+                        xhr.send(data);
+                    };
+                });
+                document.querySelectorAll('.cart-sidebar-qty-form .quantity-selector').forEach(function (select) {
+                    select.onchange = function () {
+                        var form = select.closest('form');
+                        var data = new FormData(form);
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'carrinho.php', true);
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                loadCartSidebar();
+                                updateCartCount();
+                            }
+                        };
+                        xhr.send(data);
+                    };
+                });
+            }
         });
-    });
     </script>
 </head>
+
 <body class="page-body">
     <div class="top-bar">
         <div class="top-bar-container">
@@ -85,8 +267,10 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
                 <img src="design_imagens/coffeesbook_logo.png" width="180" alt="Logo da Livraria">
             </a>
             <form class="search-bar" method="get" action="pagina_home.php">
-                <input type="text" name="busca" placeholder="O que você procura?" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
-                <button type="submit"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" width="20" alt="Buscar"></button>
+                <input type="text" name="busca" placeholder="O que você procura?"
+                    value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+                <button type="submit"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" width="20"
+                        alt="Buscar"></button>
             </form>
             <div class="header-icons">
                 <a href="pagina_login.php" title="Minha Conta">
@@ -346,7 +530,7 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
                         echo str_repeat('&#9733;', 5);
                         echo "<span class='star-count'>(1)</span>";
                         echo "</div>";
-                        echo "<div class='preco-antigo'>De: R$ " . number_format($preco_antigo, 2, ',', '.') . "<br>Por:"."</div>";
+                        echo "<div class='preco-antigo'>De: R$ " . number_format($preco_antigo, 2, ',', '.') . "<br>Por:" . "</div>";
                         echo "<div class='preco'>R$ " . number_format($dados->preco, 2, ',', '.') . "</div>";
                         echo "<div class='parcelamento'>ou 2x de R$ " . number_format($parcela, 2, ',', '.') . " sem juros</div>";
                         echo "<input type='hidden' name='codigo' value='{$dados->codigo}'>";
@@ -403,11 +587,11 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
                     ),
                 );
                 foreach ($autores as $idx => $autor) {
-                    echo '<div class="autor-card" data-autor-idx="'.$idx.'" style="display:none">';
+                    echo '<div class="autor-card" data-autor-idx="' . $idx . '" style="display:none">';
                     echo '<div class="autor-card-img">';
-                    echo '<img src="'.htmlspecialchars($autor['foto_url']).'" alt="'.htmlspecialchars($autor['nome']).'">';
+                    echo '<img src="' . htmlspecialchars($autor['foto_url']) . '" alt="' . htmlspecialchars($autor['nome']) . '">';
                     echo '</div>';
-                    echo '<div class="autor-card-nome">'.htmlspecialchars($autor['nome']).'</div>';
+                    echo '<div class="autor-card-nome">' . htmlspecialchars($autor['nome']) . '</div>';
                     echo '</div>';
                 }
                 ?>
@@ -415,38 +599,38 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
             <button id="autores-next" class="autores-carousel-btn">&#10095;</button>
         </div>
         <script>
-        (function() {
-            const cards = Array.from(document.querySelectorAll('#autores-lista .autor-card'));
-            let start = 0;
-            const visible = 3;
-            function updateCarousel() {
-                cards.forEach((card, idx) => {
-                    card.style.display = (idx >= start && idx < start + visible) ? 'flex' : 'none';
-                });
-            }
-            updateCarousel();
-            document.getElementById('autores-prev').onclick = function() {
-                if (start > 0) {
-                    start--;
-                    updateCarousel();
-                }
-            };
-            document.getElementById('autores-next').onclick = function() {
-                if (start + visible < cards.length) {
-                    start++;
-                    updateCarousel();
-                }
-            };
-            // Adiciona temporizador para avançar automaticamente
-            setInterval(function() {
-                if (start + visible < cards.length) {
-                    start++;
-                } else {
-                    start = 0;
+            (function () {
+                const cards = Array.from(document.querySelectorAll('#autores-lista .autor-card'));
+                let start = 0;
+                const visible = 3;
+                function updateCarousel() {
+                    cards.forEach((card, idx) => {
+                        card.style.display = (idx >= start && idx < start + visible) ? 'flex' : 'none';
+                    });
                 }
                 updateCarousel();
-            }, 5000);
-        })();
+                document.getElementById('autores-prev').onclick = function () {
+                    if (start > 0) {
+                        start--;
+                        updateCarousel();
+                    }
+                };
+                document.getElementById('autores-next').onclick = function () {
+                    if (start + visible < cards.length) {
+                        start++;
+                        updateCarousel();
+                    }
+                };
+
+                setInterval(function () {
+                    if (start + visible < cards.length) {
+                        start++;
+                    } else {
+                        start = 0;
+                    }
+                    updateCarousel();
+                }, 5000);
+            })();
         </script>
     </section>
     <div class="social-bar">
@@ -467,7 +651,8 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
         </div>
     </div>
     <footer class="page-footer">
-        <div class="footer-container" style="display: flex; align-items: flex-start; justify-content: center; gap: 32px; flex-wrap: wrap;">
+        <div class="footer-container"
+            style="display: flex; align-items: flex-start; justify-content: center; gap: 32px; flex-wrap: wrap;">
             <div class="footer-info">
                 <p><strong>Coffee's Book</strong> - Sua livraria online</p>
                 <p>Avenida Jorge Elias De Lucca, n°765, Nossa Senhora da Salete - 88813901, Criciúma - SC</p>
@@ -477,7 +662,6 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
         <p>&copy; 2025 Coffee's Book - All rights reserved. </p>
     </footer>
 
-    <!-- Cart Sidebar Overlay and Sidebar -->
     <div class="cart-sidebar-overlay" id="cart-sidebar-overlay"></div>
     <aside class="cart-sidebar" id="cart-sidebar">
         <div class="cart-sidebar-header">
@@ -485,75 +669,72 @@ if (isset($_POST['codigo']) && $_POST['codigo'] != "") {
             <button class="cart-sidebar-close" id="close-cart-sidebar" title="Fechar">&times;</button>
         </div>
         <div class="cart-sidebar-content" id="cart-sidebar-content">
-            <!-- Conteúdo do carrinho será carregado via AJAX -->
         </div>
     </aside>
 
     <script>
-    // ...existing JS for favoritos...
+        function loadCartSidebar() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'carrinho.php?sidebar=1', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('cart-sidebar-content').innerHTML = xhr.responseText;
+                    attachSidebarForms();
+                }
+            };
+            xhr.send();
+        }
 
-    // Carrinho lateral - scripts
-    function loadCartSidebar() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'carrinho.php?sidebar=1', true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                document.getElementById('cart-sidebar-content').innerHTML = xhr.responseText;
-                attachSidebarForms();
-            }
+        function attachSidebarForms() {
+            document.querySelectorAll('.cart-sidebar-remove-form').forEach(function (form) {
+                form.onsubmit = function (e) {
+                    e.preventDefault();
+                    var data = new FormData(form);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'carrinho.php', true);
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            loadCartSidebar();
+                            updateCartCount();
+                        }
+                    };
+                    xhr.send(data);
+                };
+            });
+            document.querySelectorAll('.cart-sidebar-qty-form .quantity-selector').forEach(function (select) {
+                select.onchange = function () {
+                    var form = select.closest('form');
+                    var data = new FormData(form);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'carrinho.php', true);
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            loadCartSidebar();
+                            updateCartCount();
+                        }
+                    };
+                    xhr.send(data);
+                };
+            });
+        }
+
+        document.getElementById('open-cart-sidebar').onclick = function (e) {
+            e.preventDefault();
+            document.getElementById('cart-sidebar-overlay').classList.add('active');
+            document.getElementById('cart-sidebar').classList.add('active');
+            loadCartSidebar();
         };
-        xhr.send();
-    }
-
-    function attachSidebarForms() {
-        // Remover item
-        document.querySelectorAll('.cart-sidebar-remove-form').forEach(function(form) {
-            form.onsubmit = function(e) {
-                e.preventDefault();
-                var data = new FormData(form);
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'carrinho.php', true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        loadCartSidebar();
-                        // location.reload(); // Removido para não recarregar a página principal
-                    }
-                };
-                xhr.send(data);
-            };
-        });
-        // Alterar quantidade
-        document.querySelectorAll('.cart-sidebar-qty-form .quantity-selector').forEach(function(select) {
-            select.onchange = function() {
-                var form = select.closest('form');
-                var data = new FormData(form);
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'carrinho.php', true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        loadCartSidebar();
-                        // location.reload(); // Removido para não recarregar a página principal
-                    }
-                };
-                xhr.send(data);
-            };
-        });
-    }
-
-    document.getElementById('open-cart-sidebar').onclick = function(e) {
-        e.preventDefault();
-        document.getElementById('cart-sidebar-overlay').classList.add('active');
-        document.getElementById('cart-sidebar').classList.add('active');
-        loadCartSidebar();
-    };
-    document.getElementById('close-cart-sidebar').onclick = function() {
-        document.getElementById('cart-sidebar-overlay').classList.remove('active');
-        document.getElementById('cart-sidebar').classList.remove('active');
-    };
-    document.getElementById('cart-sidebar-overlay').onclick = function() {
-        document.getElementById('cart-sidebar-overlay').classList.remove('active');
-        document.getElementById('cart-sidebar').classList.remove('active');
-    };
+        document.getElementById('close-cart-sidebar').onclick = function () {
+            document.getElementById('cart-sidebar-overlay').classList.remove('active');
+            document.getElementById('cart-sidebar').classList.remove('active');
+            updateCartCount();
+        };
+        document.getElementById('cart-sidebar-overlay').onclick = function () {
+            document.getElementById('cart-sidebar-overlay').classList.remove('active');
+            document.getElementById('cart-sidebar').classList.remove('active');
+            updateCartCount();
+        };
     </script>
 </body>
+
 </html>

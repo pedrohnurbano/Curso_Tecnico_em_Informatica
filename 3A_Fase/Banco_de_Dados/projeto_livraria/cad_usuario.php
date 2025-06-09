@@ -25,6 +25,7 @@ if (isset($_POST['Cadastrar'])) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,6 +33,7 @@ if (isset($_POST['Cadastrar'])) {
     <link rel="shortcut icon" href="design_imagens/coffeesbook_icon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="page-body">
     <div class="top-bar">
         <div class="top-bar-container">
@@ -40,7 +42,8 @@ if (isset($_POST['Cadastrar'])) {
             </a>
             <div class="header-icons">
                 <a href="pagina_login.php" title="Minha Conta">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24" alt="Minha Conta">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" width="24" height="24"
+                        alt="Minha Conta">
                 </a>
             </div>
         </div>
@@ -56,19 +59,22 @@ if (isset($_POST['Cadastrar'])) {
                     <div class="form-row">
                         <div class="form-col">
                             <label for="nome">Nome</label>
-                            <input type="text" name="nome" id="nome" placeholder="Digite seu nome" required autocomplete="name">
+                            <input type="text" name="nome" id="nome" placeholder="Digite seu nome" required
+                                autocomplete="name">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-col">
                             <label for="email">E-mail</label>
-                            <input type="email" name="email" id="email" placeholder="Digite seu e-mail" required autocomplete="email">
+                            <input type="email" name="email" id="email" placeholder="Digite seu e-mail" required
+                                autocomplete="email">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-col">
                             <label for="senha">Senha</label>
-                            <input type="password" name="senha" id="senha" placeholder="Digite sua senha" required autocomplete="new-password">
+                            <input type="password" name="senha" id="senha" placeholder="Digite sua senha" required
+                                autocomplete="new-password">
                         </div>
                     </div>
                 </fieldset>
@@ -86,4 +92,5 @@ if (isset($_POST['Cadastrar'])) {
         <p>&copy; 2025 Coffee's Book - All rights reserved. </p>
     </footer>
 </body>
+
 </html>
